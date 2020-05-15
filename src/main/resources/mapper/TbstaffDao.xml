@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TbstaffDao">
+
+    <resultMap type="com.entity.Tbstaff" id="TbstaffMap">
+    </resultMap>
+    <resultMap id="staffmap" type="com.entity.Tbstaff" autoMapping="true">
+<id property="staid" column="sid"></id>
+       <collection property="emps" javaType="ArrayList" ofType="com.entity.Tbemployee" autoMapping="true">
+      </collection>
+    </resultMap>
+
+    <select id="selectmanyemps" resultMap="staffmap">
+   select a.staid as sid,stadesc,staname,b.* from tbstaff a,tbemployee b where a.staid=b.staid
+    </select>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbstaffMap">
+        select
+          staid, staname, stadesc
+        from managedb.tbstaff
+        where staid = #{staid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbstaffMap">
+        select
+          staid, staname, stadesc
+        from managedb.tbstaff
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbstaffMap">
+        select
+          staid, staname, stadesc
+        from managedb.tbstaff
+        <where>
+            <if test="staid != null">
+                and staid = #{staid}
+            </if>
+            <if test="staname != null and staname != ''">
+                and staname = #{staname}
+            </if>
+            <if test="stadesc != null and stadesc != ''">
+                and stadesc = #{stadesc}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="staid" useGeneratedKeys="true">
+        insert into managedb.tbstaff(staname, stadesc)
+        values (#{staname}, #{stadesc})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update managedb.tbstaff
+        <set>
+            <if test="staname != null and staname != ''">
+                staname = #{staname},
+            </if>
+            <if test="stadesc != null and stadesc != ''">
+                stadesc = #{stadesc},
+            </if>
+        </set>
+        where staid = #{staid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from managedb.tbstaff where staid = #{staid}
+    </delete>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TbnoticeDao">
+
+    <resultMap type="com.entity.Tbnotice" id="TbnoticeMap">
+      <!--  <result property="notid" column="notid" jdbcType="INTEGER"/>
+        <result property="notuser" column="notuser" jdbcType="VARCHAR"/>
+        <result property="nottime" column="nottime" jdbcType="OTHER"/>
+        <result property="nottitle" column="nottitle" jdbcType="VARCHAR"/>
+        <result property="notcontent" column="notcontent" jdbcType="VARCHAR"/>
+   -->
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbnoticeMap">
+        select
+          notid, notuser, nottime, nottitle, notcontent
+        from managedb.tbnotice
+        where notid = #{notid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbnoticeMap">
+        select
+          notid, notuser, nottime, nottitle, notcontent
+        from managedb.tbnotice
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbnoticeMap">
+        select
+          notid, notuser, nottime, nottitle, notcontent
+        from managedb.tbnotice
+        <where>
+            <if test="notid != null">
+                and notid = #{notid}
+            </if>
+            <if test="notuser != null and notuser != ''">
+                and notuser = #{notuser}
+            </if>
+            <if test="nottime != null">
+                and nottime = #{nottime}
+            </if>
+            <if test="nottitle != null and nottitle != ''">
+                and nottitle = #{nottitle}
+            </if>
+            <if test="notcontent != null and notcontent != ''">
+                and notcontent = #{notcontent}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="notid" useGeneratedKeys="true">
+        insert into managedb.tbnotice(notuser, nottime, nottitle, notcontent)
+        values (#{notuser}, #{nottime}, #{nottitle}, #{notcontent})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update managedb.tbnotice
+        <set>
+            <if test="notuser != null and notuser != ''">
+                notuser = #{notuser},
+            </if>
+            <if test="nottime != null">
+                nottime = #{nottime},
+            </if>
+            <if test="nottitle != null and nottitle != ''">
+                nottitle = #{nottitle},
+            </if>
+            <if test="notcontent != null and notcontent != ''">
+                notcontent = #{notcontent},
+            </if>
+        </set>
+        where notid = #{notid}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from managedb.tbnotice where notid = #{notid}
+    </delete>
+
+</mapper>

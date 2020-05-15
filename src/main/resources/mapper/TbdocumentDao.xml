@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.TbdocumentDao">
+    <resultMap type="com.entity.Tbdocument" id="TbdocumentMap">
+    </resultMap>
+    <!--查询单个-->
+    <select id="queryById" resultMap="TbdocumentMap">
+        select
+          did, dtitle, dfilename, createtime, uid
+        from managedb.tbdocument
+        where  did= #{did}
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TbdocumentMap">
+        select
+          did, dtitle, dfilename, createtime, uid
+        from managedb.tbdocument
+        limit #{offset}, #{limit}
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="TbdocumentMap">
+        select
+          did, dtitle, dfilename, createtime, uid
+        from managedb.tbdocument
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into managedb.tbdocument(did, dtitle, dfilename, createtime, uid)
+        values (#{did}, #{dtitle}, #{dfilename}, #{createtime}, #{uid})
+    </insert>
+  <!--  批量添加文档-->
+    <insert id="insertmore">
+        insert into tbdocument values
+        <foreach collection="list" item="document" separator=",">
+       (#{document.did}, #{document.dtitle}, #{document.dfilename}, #{document.createtime}, #{document.uid})
+        </foreach>
+    </insert>
+<!--    <trim prefix="(" suffix=")">
+        <if test="did!=null">
+            #{did},
+        </if>
+        <if test="dtitle!=null and dtitle!=''">
+            #{dtitle},
+        </if>
+        <if test="dfilename!=null and dfilename!=''">
+            #{dfilename},
+        </if>
+        <if test="uid !=null">
+            #{uid},
+        </if>
+    </trim>-->
+    <!--通过主键修改数据-->
+    <update id="update">
+        update managedb.tbdocument
+        <set>
+            <if test="did != null">
+                did = #{did},
+            </if>
+            <if test="dtitle != null and dtitle != ''">
+                dtitle = #{dtitle},
+            </if>
+            <if test="dfilename != null and dfilename != ''">
+                dfilename = #{dfilename},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+        </set>
+        where  did = #{did}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from managedb.tbdocument where  did= #{did}
+    </delete>
+
+</mapper>

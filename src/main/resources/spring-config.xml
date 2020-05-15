@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <context:component-scan base-package="com">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:jdbc.properties"></property>
+    </bean>
+    <bean id="datasourse" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.oracle.driver}" />
+        <property name="url" value="${jdbc.oracle.url}" />
+        <property name="username" value="${jdbc.oracle.username}" />
+        <property name="password" value="${jdbc.oracle.password}" />
+        <property name="initialSize" value="10"></property>
+        <property name="maxActive" value="50"></property>
+        <property name="minIdle" value="5"></property>
+        <property name="maxWait" value="5000"></property>
+    </bean>
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="dataSourceTransactionManager">
+        <property name="dataSource" ref="datasourse"></property>
+    </bean>
+<tx:annotation-driven transaction-manager="dataSourceTransactionManager"></tx:annotation-driven>
+
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+<property name="dataSource" ref="datasourse"></property>
+<property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+        <!-- 注意其他配置 -->
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <!--使用下面的方式配置参数，一行配置一个 -->
+                        <value>
+                            params=value1
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+</bean>
+
+   <!-- 在所设置的包下，将所有的接口生成动态代理实现类并由spring容器管理-->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+<property name="basePackage" value="com.dao"></property>
+    </bean>
+</beans>
